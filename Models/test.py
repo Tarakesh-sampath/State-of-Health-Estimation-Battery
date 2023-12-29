@@ -44,13 +44,14 @@ y_test = y_test.sort_index(axis=0)
 
 #define lstm model we have 4 input variable so 3 layers
 model = Sequential()
-model.add(LSTM(128, activation='tanh',recurrent_activation='sigmoid',return_sequences=True,input_shape=(X_train.shape[1],1)))
+model.add(LSTM(128, activation='tanh', recurrent_activation='sigmoid', return_sequences=True, input_shape=(X_train.shape[1],1)))
 model.add(Dropout(0.25))
-model.add(LSTM(64,return_sequences=True))
+model.add(LSTM(64, return_sequences=True))
 model.add(Dropout(0.25))
-model.add(LSTM(64,return_sequences=True))
+model.add(LSTM(64))
 model.add(Dropout(0.25))
 model.add(Dense(1))
+
 model.compile(optimizer='adam', loss='mse')
 model.summary()
 
@@ -60,8 +61,6 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_wei
 model.fit(X_train, y_train, epochs=200,batch_size=20, verbose=1,validation_split=0.2, callbacks=[early_stopping])
 
 y_pred_1 = model.predict(X_test, verbose=1)
-
-y_pred_1=[ float(sum(i)/4) for i in y_pred_1 ]
 
 plt.plot(X_test["cycle"],y_test,color='red',label='actual',linewidth=4)
 plt.plot(X_test["cycle"],y_pred_1,color='cyan',label="lstm",linewidth=1)
